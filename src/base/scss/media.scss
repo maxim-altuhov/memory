@@ -1,0 +1,37 @@
+.container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+// Большие девайсы (большие десктопы, < 1200px)
+@media (max-width: 1199px) {
+  .container {
+    max-width: 991px;
+    padding: 0 15px;
+  }
+}
+
+// Средние девайсы («таблетки», < 992px) 
+@media (max-width: 991px) {
+  .container {
+    max-width: 767px;
+    padding: 0 15px;
+  }
+}
+
+// Малые девайсы («ландшафтные», < 768px)
+@media (max-width: 767px) {
+  .container {
+    max-width: 575px;
+    padding: 0 15px;
+  }
+}
+
+// Малые девайсы («ландшафтные телефоны», < 576px)
+@media (max-width: 575px) {
+  .container {
+    max-width: 320px;
+    padding: 0 15px;
+  }
+}
