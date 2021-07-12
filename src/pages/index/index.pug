@@ -14,4 +14,23 @@ html(lang="ru")
     link(rel="manifest" href="./assets/site.webmanifest")
     link(rel="mask-icon" href="./assets/safari-pinned-tab.svg" color="#5bbad5")
   body
-    
+    .container
+      .page
+        .page__wrapper
+          h1.page__title Игра мемори
+          .control
+            .control__wrapper.simplicity Выберите сложность:
+              button.control__btn.control__btn_active 8
+              button.control__btn 12
+              button.control__btn 16
+          .control
+            .control__wrapper.type Выберите тип игры:
+              button.control__btn.control__btn_active(data-type='numbers') Числа
+              button.control__btn(data-type="words") Слова
+              button.control__btn(data-type="shapes") Фигуры
+              button.control__btn(data-type="colors") Цвета
+          .loading
+            .loading__img
+              img(src=require("./img/loader.gif"), alt="loadImg")
+          .memory 
+            .memory__wrapper
