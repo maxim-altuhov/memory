@@ -21,7 +21,7 @@ html {
 .control {
 
   &__wrapper {
-    margin-top: 30px;
+    margin-top: 25px;
     text-align: center;
     font-weight: 700;
   }
@@ -59,7 +59,7 @@ html {
   justify-content: center;
 
   &__wrapper {
-    padding: 3% 0;
+    padding: 2% 0;
     width: 65%;
     display: flex;
     justify-content: space-around;
@@ -70,8 +70,8 @@ html {
 
 .card {
   margin: 10px;
-  width: 150px;
-  height: 150px;
+  width: 160px;
+  height: 160px;
   border-radius: 15px;
   transition: transform 1s;
   transform-style: preserve-3d;
@@ -85,11 +85,11 @@ html {
     height: 100%;
     border: 1px solid #222;
     border-radius: 15px;
-    line-height: 130px;
+    line-height: 140px;
     color: #000;
     text-align: center;
     font-weight: bold;
-    font-size: 30px;
+    font-size: 26px;
     backface-visibility: hidden;
   }
 

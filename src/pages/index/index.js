@@ -5,7 +5,7 @@ window.jQuery = $;
 window.$ = $;
 
 function initFunction() {
-  let numberOfCards;
+  let startNumberOfCards = 12;
 
   // функ. для перемешивания случайным образом эл-тов массива
   function shuffle(array) {
@@ -44,9 +44,9 @@ function initFunction() {
       flippedCard = $('.is-flipped');
     }
 
-    if (flippedCard.length === 2 && flippedCard.eq(0).text() !== flippedCard.eq(1).text()) {
+    if (flippedCard.length === 2 && flippedCard.eq(0).data('value') !== flippedCard.eq(1).data('value')) {
       checkThisCard();
-    } else if (flippedCard.length === 2 && flippedCard.eq(0).text() === flippedCard.eq(1).text()) {
+    } else if (flippedCard.length === 2 && flippedCard.eq(0).data('value') === flippedCard.eq(1).data('value')) {
       checkThisCard('disabled');
     }
   }
@@ -58,12 +58,21 @@ function initFunction() {
     }
 
     // формирование карточек
-    render() {
+    render(currentType) {
       const fragment = document.createDocumentFragment();
-      const inputArray = Array.from({ length: 100 }, () => Math.floor(Math.random() * 100));
+      let inputArray;
+
+      if (currentType === 'numbers') {
+        inputArray = Array.from({ length: 100 }, () => Math.floor(Math.random() * 100));
+      } else if (currentType === 'words') {
+        inputArray = ['съезд', 'мэр', 'учет', 'цель', 'мост', 'дух', 'апрель', 'год', 'человек', 'время', 'дело', 'жизнь', 'день', 'рука', 'работа', 'слово', 'место', 'вопрос', 'лицо', 'глаз', 'страна', 'друг', 'сторона', 'дом', 'случай', 'ребенок', 'голова', 'система', 'вид', 'конец', 'город', 'часть', 'женщина', 'земля', 'решение', 'власть', 'машина', 'закон', 'час', 'образ', 'отец', 'история', 'нога', 'вода', 'война', 'дверь', 'бог', 'народ', 'область', 'число', 'голос', 'группа', 'жена', 'процесс', 'условие', 'книга', 'ночь', 'суд', 'деньга', 'уровень', 'начало', 'стол', 'связь', 'имя', 'форма', 'путь', 'статья', 'школа', 'душа', 'дорога', 'язык', 'взгляд', 'момент', 'минута', 'месяц', 'порядок', 'цель', 'муж', 'помощь', 'мысль', 'вечер', 'орган', 'рынок', 'партия', 'роль', 'смысл', 'мама', 'мера', 'улица'];
+      } else if (currentType === 'colors') {
+        inputArray = ['FF0000', 'FFFF00', 'FFFFFF', '4169E1', '696969', '32CD32', 'FF1493', '800080', '00FFFF', 'FFA500', '20B2AA', 'FFDAB9', 'ADFF2F', 'FF6347', 'FF69B4', 'F0E68C'];
+      }
+
       let arrayResult = [];
 
-      for (; arrayResult.length < numberOfCards;) {
+      for (; arrayResult.length < this.quantity;) {
         const randomValue = inputArray[Math.floor(Math.random() * inputArray.length)];
 
         if (!arrayResult.includes(randomValue)) arrayResult.push(randomValue, randomValue);
@@ -73,19 +82,21 @@ function initFunction() {
 
       for (let index = 0; index < this.quantity; index++) {
         const element = document.createElement('div');
-        $(element).addClass('card');
-        $(element).html(`<div class="card__face card__face_front"></div><div class="card__face card__face_back">${arrayResult[index]}</div>`);
-        $(element).on('click', checkingCards);
+        const html = (currentType === 'colors') ? `<div class="card__face card__face_front"></div><div class="card__face card__face_back" style="background-color:#${arrayResult[index]}"></div>` : `<div class="card__face card__face_front"></div><div class="card__face card__face_back">${arrayResult[index]}</div>`;
+
+        $(element).addClass('card')
+          .data('value', `${arrayResult[index]}`)
+          .html(html)
+          .on('click', checkingCards);
 
         fragment.append(element);
       }
 
       $('.loading').fadeIn().fadeOut();
-      $('.memory__wrapper')
-        .css('display', 'none')
+      $('.memory__wrapper').css('display', 'none')
         .append(fragment)
         .delay(800)
-        .fadeIn(800);
+        .fadeIn(850);
     }
 
     // удаление всех карточек
@@ -95,32 +106,44 @@ function initFunction() {
   }
 
   // инициализация панели с контроллерами
-  function initControl(selector, startNumberOfCards) {
+  function initControl(selector) {
     const $controls = $(selector);
-    numberOfCards = startNumberOfCards;
 
     function keepTrackOfControls() {
+      const setType = $('.type .control__btn_active').data('type');
+
       if (!$(this).hasClass('control__btn_active')) {
         $controls.removeClass('control__btn_active');
 
         $(this).addClass('control__btn_active');
+        Cards.remove();
 
-        if (selector === '.simplicity button') {
-          numberOfCards = $(this).text();
-          Cards.remove();
-          new Cards(numberOfCards).render();
+        if ($(this).parent().hasClass('simplicity')) {
+          startNumberOfCards = $(this).text();
+          new Cards(startNumberOfCards).render(setType);
+        }
+
+        if ($(this).data('type') === 'numbers') {
+          new Cards(startNumberOfCards).render('numbers');
+        }
+
+        if ($(this).data('type') === 'words') {
+          new Cards(startNumberOfCards).render('words');
+        }
+
+        if ($(this).data('type') === 'colors') {
+          new Cards(startNumberOfCards).render('colors');
         }
       }
     }
 
     $controls.on('click', keepTrackOfControls);
-
-    if (startNumberOfCards) new Cards(startNumberOfCards).render();
   }
 
   // вызов функций и методов
-  initControl('.simplicity button', 12);
+  initControl('.simplicity button');
   initControl('.type button');
+  new Cards(startNumberOfCards).render('numbers');
 }
 
 $(() => {
