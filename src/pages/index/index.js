@@ -4,8 +4,55 @@ import $ from 'jquery';
 window.jQuery = $;
 window.$ = $;
 
-function initFunction() {
-  let startNumberOfCards = 12;
+$(() => {
+  let quantityCards = 12;
+  let setType = 'numbers';
+  let loadingContent = false;
+  let allowInitTimer = true;
+  let timerID;
+
+  // функ. установки лучшего результата
+  const $resultMinuts = $('.result__minuts');
+  const $resultSeconds = $('.result__seconds');
+
+  function setBestTime() {
+    const currentBestTime = localStorage.getItem(`${setType}-${quantityCards}`);
+
+    if (currentBestTime) {
+      $resultMinuts.text(currentBestTime.slice(0, 2));
+      $resultSeconds.text(currentBestTime.slice(2, 4));
+    } else {
+      $resultMinuts.text('-');
+      $resultSeconds.text('-');
+    }
+  }
+
+  // функ. для работы с таймером
+  let $elemSeconds = $('.time__seconds');
+  let $elemMinutes = $('.time__minutes');
+
+  function endTimer() {
+    clearInterval(timerID);
+    allowInitTimer = true;
+    $elemSeconds.text('00');
+    $elemMinutes.text('00');
+  }
+
+  function startTimer() {
+    let seconds = Number($elemSeconds.text());
+    let minutes = Number($elemMinutes.text());
+
+    seconds += 1;
+    $elemSeconds.text(seconds < 10 ? `0${seconds}` : seconds);
+
+    if (seconds === 60) {
+      minutes += 1;
+      $elemSeconds.text('00');
+      $elemMinutes.text(minutes < 10 ? `0${minutes}` : minutes);
+    }
+  }
+
+  ///
 
   // функ. для перемешивания случайным образом эл-тов массива
   function shuffle(array) {
@@ -27,6 +74,11 @@ function initFunction() {
 
   // переключение и сравнение карточек
   function checkingCards() {
+    if (allowInitTimer) {
+      timerID = setInterval(startTimer, 1000);
+      allowInitTimer = false;
+    }
+
     function checkThisCard(classDisabled = '') {
       const $cards = $('.card');
 
@@ -37,17 +89,28 @@ function initFunction() {
       }, 800);
     }
 
-    let flippedCard;
+    let $flippedCard;
 
     if ($('.is-flipped').length < 2) {
       $(this).toggleClass('is-flipped');
-      flippedCard = $('.is-flipped');
+      $flippedCard = $('.is-flipped');
     }
 
-    if (flippedCard.length === 2 && flippedCard.eq(0).data('value') !== flippedCard.eq(1).data('value')) {
+    if ($flippedCard.length === 2 && $flippedCard.eq(0).data('value') !== $flippedCard.eq(1).data('value')) {
       checkThisCard();
-    } else if (flippedCard.length === 2 && flippedCard.eq(0).data('value') === flippedCard.eq(1).data('value')) {
+    } else if ($flippedCard.length === 2 && $flippedCard.eq(0).data('value') === $flippedCard.eq(1).data('value')) {
       checkThisCard('disabled');
+    }
+
+    if ($('.disabled').length + 2 === Number(quantityCards) && $flippedCard.length === 2) {
+      clearInterval(timerID);
+      allowInitTimer = true;
+
+      const resultTime = $('.time__digital').text();
+
+      if (Number(localStorage.getItem(`${setType}-${quantityCards}`)) === 0 || Number(localStorage.getItem(`${setType}-${quantityCards}`)) > Number(resultTime)) {
+        localStorage.setItem(`${setType}-${quantityCards}`, resultTime);
+      }
     }
   }
 
@@ -59,6 +122,7 @@ function initFunction() {
 
     // формирование карточек
     render(currentType) {
+      loadingContent = true;
       const fragment = document.createDocumentFragment();
       let inputArray;
 
@@ -92,11 +156,11 @@ function initFunction() {
         fragment.append(element);
       }
 
-      $('.loading').fadeIn().fadeOut();
-      $('.memory__wrapper').css('display', 'none')
-        .append(fragment)
-        .delay(800)
-        .fadeIn(850);
+      $('.loading').fadeIn().fadeOut(() => {
+        $('.memory__wrapper').css('display', 'none').append(fragment).fadeIn(800);
+        loadingContent = false;
+        setBestTime();
+      });
     }
 
     // удаление всех карточек
@@ -110,29 +174,32 @@ function initFunction() {
     const $controls = $(selector);
 
     function keepTrackOfControls() {
-      const setType = $('.type .control__btn_active').data('type');
-
-      if (!$(this).hasClass('control__btn_active')) {
+      if (!$(this).hasClass('control__btn_active') && !loadingContent) {
         $controls.removeClass('control__btn_active');
-
         $(this).addClass('control__btn_active');
         Cards.remove();
 
+        setType = $('.type .control__btn_active').data('type');
+
         if ($(this).parent().hasClass('simplicity')) {
-          startNumberOfCards = $(this).text();
-          new Cards(startNumberOfCards).render(setType);
+          quantityCards = $(this).text();
+          endTimer();
+          new Cards(quantityCards).render(setType);
         }
 
         if ($(this).data('type') === 'numbers') {
-          new Cards(startNumberOfCards).render('numbers');
+          endTimer();
+          new Cards(quantityCards).render('numbers');
         }
 
         if ($(this).data('type') === 'words') {
-          new Cards(startNumberOfCards).render('words');
+          endTimer();
+          new Cards(quantityCards).render('words');
         }
 
         if ($(this).data('type') === 'colors') {
-          new Cards(startNumberOfCards).render('colors');
+          endTimer();
+          new Cards(quantityCards).render('colors');
         }
       }
     }
@@ -140,12 +207,14 @@ function initFunction() {
     $controls.on('click', keepTrackOfControls);
   }
 
-  // вызов функций и методов
+  // вызовы и обработчики
   initControl('.simplicity button');
   initControl('.type button');
-  new Cards(startNumberOfCards).render('numbers');
-}
+  new Cards(quantityCards).render('numbers');
 
-$(() => {
-  initFunction();
+  $('.time__reset').on('click', () => {
+    Cards.remove();
+    endTimer();
+    new Cards(quantityCards).render(setType);
+  });
 });

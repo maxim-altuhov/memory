@@ -28,6 +28,19 @@ html(lang="ru")
               button.control__btn.control__btn_active(data-type='numbers') числа
               button.control__btn(data-type="words") слова
               button.control__btn(data-type="colors") цвета
+          .time
+            .time__wrapper
+              div.time__block
+                span.time__digital.time__minutes 00
+                span.time__info м
+              div.time__block
+                span.time__digital.time__seconds 00
+                span.time__info с
+              button.time__reset сброс
+          .result Ваше лучшeе время:
+            span.result__minuts -
+            | :
+            span.result__seconds -
           .loading
             .loading__img
               img(src=require("./img/loader.gif"), alt="loadImg")
