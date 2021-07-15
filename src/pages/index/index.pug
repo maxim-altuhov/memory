@@ -14,35 +14,34 @@ html(lang="ru")
     link(rel="manifest" href="./assets/site.webmanifest")
     link(rel="mask-icon" href="./assets/safari-pinned-tab.svg" color="#5bbad5")
   body
-    .container
-      .page
-        .page__wrapper
-          h1.page__title Игра мемори
-          .control
-            .control__wrapper.simplicity Выберите сложность:
-              button.control__btn 8
-              button.control__btn.control__btn_active 12
-              button.control__btn 16
-          .control
-            .control__wrapper.type Выберите тип игры:
-              button.control__btn.control__btn_active(data-type='numbers') числа
-              button.control__btn(data-type="words") слова
-              button.control__btn(data-type="colors") цвета
-          .time
-            .time__wrapper
-              div.time__block
-                span.time__digital.time__minutes 00
-                span.time__info м
-              div.time__block
-                span.time__digital.time__seconds 00
-                span.time__info с
-              button.time__reset сброс
-          .result Ваше лучшeе время:
-            span.result__minuts -
-            | :
-            span.result__seconds -
-          .loading
-            .loading__img
-              img(src=require("./img/loader.gif"), alt="loadImg")
-          .memory 
-            .memory__wrapper
+    .page
+      .page__wrapper
+        h1.page__title Игра мемори
+        .control
+          .control__wrapper.simplicity Выберите сложность:
+            button.control__btn 8
+            button.control__btn.control__btn_active 12
+            button.control__btn 16
+        .control
+          .control__wrapper.type Выберите тип игры:
+            button.control__btn.control__btn_active(data-type='numbers') числа
+            button.control__btn(data-type="words") слова
+            button.control__btn(data-type="colors") цвета
+        .time
+          .time__wrapper
+            div.time__block
+              span.time__digital.time__minutes 00
+              span.time__info м
+            div.time__block
+              span.time__digital.time__seconds 00
+              span.time__info с
+            button.time__reset сброс
+        .result Ваше лучшeе время:
+          span.result__minuts -
+          | :
+          span.result__seconds -
+        .loading
+          .loading__img
+            img(src=require("./img/loader.gif"), alt="loadImg")
+        .memory 
+          .memory__wrapper
