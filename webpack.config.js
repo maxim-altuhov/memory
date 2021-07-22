@@ -22,6 +22,7 @@ const allPages = fs.readdirSync(pagesDir);
 const isDev = process.env.NODE_ENV === 'development';
 const isDevServer = process.env.SECOND_ENV === 'devserver';
 const isProd = !isDev;
+let inputTypeFile = 'html'; // либо pug
 
 // формируем имя файла в зависимости от режима сборки
 const filename = ext => isDev ? `[name].${ext}` : `[name].[fullhash].${ext}`;
@@ -88,7 +89,7 @@ const plugins = () => {
   const base = [
     ...allPages.map(page => new HTMLWebpackPlugin({
       filename: `${page}.html`,
-      template: `${pagesDir}/${page}/${page}.pug`,
+      template: `${pagesDir}/${page}/${page}.${inputTypeFile}`,
       chunks: [`${page}`],
       minify: {
         collapseWhitespace: isProd,
@@ -195,7 +196,7 @@ const optimization = () => {
 const entryPoint = () => {
   const obj = {};
   allPages.forEach(page => {
-    obj[`${page}`] = `./pages/${page}/${page}.js`;
+    obj[`${page}`] = `./pages/${page}/${page}`;
   });
   return obj;
 };
@@ -213,7 +214,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
   },
   resolve: {
-    extensions: ['.js', '.json', '.css', '.scss', '.html', '.pug'],
+    extensions: ['.js', '.ts', '.jsx', '.json', '.css', '.scss', '.html', '.pug'],
     alias: {
       '@base': path.resolve(__dirname, 'src/base'),
       '@scss': path.resolve(__dirname, 'src/base/scss'),
@@ -240,6 +241,22 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: babelOptions(),
+        },
+      },
+      {
+        test: /\.ts$/i,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: babelOptions('@babel/preset-typescript'),
+        },
+      },
+      {
+        test: /\.jsx$/i,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: babelOptions('@babel/preset-react'),
         },
       },
       {
