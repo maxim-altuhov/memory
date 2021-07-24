@@ -3,10 +3,10 @@ import './index.scss';
 import $ from 'jquery';
 
 $(() => {
-  let quantityCards: number = 12;
-  let setType: string = 'numbers';
-  let loadingContent: boolean = false;
-  let allowInitTimer: boolean = true;
+  let quantityCards = 12;
+  let setType = 'numbers';
+  let loadingContent = false;
+  let allowInitTimer = true;
   // eslint-disable-next-line no-undef
   let timerID: NodeJS.Timeout;
 
@@ -14,8 +14,8 @@ $(() => {
   const $resultMinuts = $('.result__minuts');
   const $resultSeconds = $('.result__seconds');
 
-  function setBestTime(): void {
-    const currentBestTime: string = localStorage.getItem(`${setType}-${quantityCards}`);
+  function setBestTime() {
+    const currentBestTime = localStorage.getItem(`${setType}-${quantityCards}`);
 
     if (currentBestTime) {
       $resultMinuts.text(currentBestTime.slice(0, 2));
@@ -30,16 +30,16 @@ $(() => {
   const $elemSeconds = $('.time__seconds');
   const $elemMinutes = $('.time__minutes');
 
-  function endTimer(): void {
+  function endTimer() {
     clearInterval(timerID);
     allowInitTimer = true;
     $elemSeconds.text('00');
     $elemMinutes.text('00');
   }
 
-  function startTimer(): void {
-    let seconds: number = Number($elemSeconds.text());
-    let minutes: number = Number($elemMinutes.text());
+  function startTimer() {
+    let seconds = Number($elemSeconds.text());
+    let minutes = Number($elemMinutes.text());
 
     seconds += 1;
     $elemSeconds.text(seconds < 10 ? `0${seconds}` : seconds);
@@ -55,7 +55,7 @@ $(() => {
 
   // функ. для перемешивания случайным образом эл-тов массива
   function shuffle(array: (string | number)[]) {
-    let currentIndex: number = array.length;
+    let currentIndex = array.length;
     let temporaryValue: (string | number);
     let randomIndex: number;
 
@@ -72,13 +72,13 @@ $(() => {
   }
 
   // переключение и сравнение карточек
-  function checkingCards(): void {
+  function checkingCards(this: string) {
     if (allowInitTimer) {
       timerID = setInterval(startTimer, 1000);
       allowInitTimer = false;
     }
 
-    function checkThisCard(classDisabled: string = '') {
+    function checkThisCard(classDisabled = '') {
       const $cards = $('.card');
 
       $cards.addClass('not-click');
@@ -89,7 +89,7 @@ $(() => {
     }
 
     // eslint-disable-next-line no-undef
-    let $flippedCard: JQuery < HTMLElement >;
+    let $flippedCard = $('.is-flipped');
 
     if ($('.is-flipped').length < 2) {
       $(this).toggleClass('is-flipped');
@@ -106,7 +106,7 @@ $(() => {
       clearInterval(timerID);
       allowInitTimer = true;
 
-      const resultTime: string = $('.time__digital').text();
+      const resultTime = $('.time__digital').text();
 
       if (Number(localStorage.getItem(`${setType}-${quantityCards}`)) === 0 || Number(localStorage.getItem(`${setType}-${quantityCards}`)) > Number(resultTime)) {
         localStorage.setItem(`${setType}-${quantityCards}`, resultTime);
@@ -115,10 +115,10 @@ $(() => {
   }
 
   // формирование карточек
-  function cardsRender(currentType: string): void {
+  function cardsRender(currentType: string) {
     loadingContent = true;
     const fragment = document.createDocumentFragment();
-    let inputArray: (string | any)[];
+    let inputArray: (string | number)[] = [];
 
     if (currentType === 'numbers') {
       inputArray = Array.from({ length: 100 }, () => Math.floor(Math.random() * 100));
@@ -159,15 +159,15 @@ $(() => {
   }
 
   // удаление всех карточек
-  function cardsRemove(): void {
+  function cardsRemove() {
     $('.card').remove();
   }
 
   // инициализация панели с контроллерами
-  function initControl(selector: string): void {
+  function initControl(selector: string) {
     const $controls = $(selector);
 
-    function keepTrackOfControls(): void {
+    function keepTrackOfControls(this: string) {
       if (!$(this).hasClass('control__btn_active') && !loadingContent) {
         $controls.removeClass('control__btn_active');
         $(this).addClass('control__btn_active');
