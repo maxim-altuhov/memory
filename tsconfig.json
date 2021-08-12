@@ -6,6 +6,7 @@
       "DOM",
       "ES2021"
     ],
+    "typeRoots": ["node_modules/@types"],
     "outDir": "./dist/js/",
     "moduleResolution": "node",
     "esModuleInterop": true,
