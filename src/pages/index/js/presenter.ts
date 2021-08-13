@@ -1,4 +1,3 @@
-// import $ from 'jquery';
 import Model from './model';
 import View from './view';
 
@@ -11,16 +10,8 @@ class Presenter {
     this.model = model;
   }
 
-  getInputArray(value:string) {
-    return this.model.getInputArray(value);
-  }
-
-  getTimerID() {
-    return this.model.getTimerID();
-  }
-
-  setTimerID(value: NodeJS.Timeout) {
-    this.model.timerID = value;
+  getCurrentBestTime() {
+    return this.model.getCurrentBestTime();
   }
 
   getQuantityCards() {
@@ -55,8 +46,28 @@ class Presenter {
     this.model.setStatusInitTimer(value);
   }
 
-  static shuffle(array: (string | number)[]) {
-    return Model.shuffle(array);
+  getSelectorControlDifficulty() {
+    return this.model.getSelectorControlDifficulty();
+  }
+
+  getSelectorControlType() {
+    return this.model.getSelectorControlType();
+  }
+
+  getTimerID() {
+    return this.model.getTimerID();
+  }
+
+  setTimerID(value: NodeJS.Timeout) {
+    this.model.timerID = value;
+  }
+
+  getInputArray(value: string) {
+    return this.model.getInputArray(value);
+  }
+
+  returnArrayShuffle(currentType: string): (string | number)[] {
+    return this.model.returnArrayShuffle(currentType);
   }
 }
 

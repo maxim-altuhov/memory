@@ -6,31 +6,37 @@ class View {
   $resultSeconds = $('.result__seconds');
   $elemSeconds = $('.time__seconds');
   $elemMinutes = $('.time__minutes');
+  $elemTimeReset = $('.time__reset');
+  $elemWithResultTime = $('.time__digital');
+  $cards = $('.card');
   presenter: any;
 
   constructor() {
     this.presenter = null;
   }
 
-  init() {
-    this.initControl('.difficulty button');
-    this.initControl('.type button');
-    this.cardsRender('numbers');
-
-    $('.time__reset').on('click', () => {
-      View.cardsRemove();
-      this.endTimer();
-      this.cardsRender(this.presenter.getType());
-    });
-  }
-
   registerWith(presenter: Presenter) {
     this.presenter = presenter;
   }
 
+  init() {
+    this.initControlsPanel(this.presenter.getSelectorControlDifficulty());
+    this.initControlsPanel(this.presenter.getSelectorControlType());
+    this.cardsRender(this.presenter.getType());
+
+    this.$elemTimeReset.on('click', this.handleResetTimer.bind(this));
+  }
+
+  // сброс таймера
+  handleResetTimer() {
+    this.cardsRemove();
+    this.endTimer();
+    this.cardsRender(this.presenter.getType());
+  }
+
   // метод для установки лучшего результата
   setBestTime() {
-    const currentBestTime = localStorage.getItem(`${this.presenter.getType()}-${this.presenter.getQuantityCards()}`);
+    const currentBestTime = this.presenter.getCurrentBestTime();
 
     if (currentBestTime) {
       this.$resultMinuts.text(currentBestTime.slice(0, 2));
@@ -41,7 +47,7 @@ class View {
     }
   }
 
-  // метод для работы с таймером
+  // методы для работы с таймером
   endTimer() {
     clearInterval(this.presenter.getTimerID());
     this.presenter.setStatusInitTimer(true);
@@ -62,18 +68,20 @@ class View {
       this.$elemMinutes.text(minutes < 10 ? `0${minutes}` : minutes);
     }
   }
+  ///
 
-  static checkThisCard(classDisabled = '') {
-    const $cards = $('.card');
+  // открытие/закрытие карточек
+  checkThisCard(classDisabled = '') {
+    this.$cards = $('.card');
 
-    $cards.addClass('not-click');
+    this.$cards.addClass('not-click');
     setTimeout(() => {
       $('.is-flipped').removeClass('is-flipped').addClass(classDisabled);
-      $cards.removeClass('not-click');
+      this.$cards.removeClass('not-click');
     }, 800);
   }
 
-  // переключение и сравнение карточек
+  // переключение и сравнение карточек с запуском таймера
   checkingCards(event: { target: any; }) {
     if (this.presenter.getStatusInitTimer()) {
       const initTimer = setInterval(this.startTimer.bind(this), 1000);
@@ -90,17 +98,17 @@ class View {
     }
 
     if ($flippedCard.length === 2 && $flippedCard.eq(0).data('value') !== $flippedCard.eq(1).data('value')) {
-      View.checkThisCard();
+      this.checkThisCard();
     } else if ($flippedCard.length === 2 && $flippedCard.eq(0).data('value') === $flippedCard.eq(1).data('value')) {
-      View.checkThisCard('disabled');
+      this.checkThisCard('disabled');
     }
 
     if ($('.disabled').length + 2 === this.presenter.getQuantityCards() && $flippedCard.length === 2) {
       clearInterval(this.presenter.getTimerID());
       this.presenter.setStatusInitTimer(true);
 
-      const resultTime = $('.time__digital').text();
-      const currentBestTime = Number(localStorage.getItem(`${this.presenter.getType()}-${this.presenter.getQuantityCards()}`));
+      const resultTime = this.$elemWithResultTime.text();
+      const currentBestTime = Number(this.presenter.getCurrentBestTime());
 
       if (currentBestTime === 0 || currentBestTime > Number(resultTime)) {
         localStorage.setItem(`${this.presenter.getType()}-${this.presenter.getQuantityCards()}`, resultTime);
@@ -111,19 +119,8 @@ class View {
   // формирование карточек
   cardsRender(currentType: string) {
     this.presenter.setLoadingStatus(true);
-
+    const arrayResult = this.presenter.returnArrayShuffle(currentType);
     const fragment = document.createDocumentFragment();
-    let inputArray: (string | number)[] = this.presenter.getInputArray(currentType);
-    let arrayResult: (string | number)[] = [];
-
-    for (; arrayResult.length < this.presenter.getQuantityCards();) {
-      const randomNumber = Math.floor(Math.random() * inputArray.length);
-      const randomValue = inputArray[randomNumber];
-
-      if (!arrayResult.includes(randomValue)) arrayResult.push(randomValue, randomValue);
-    }
-
-    arrayResult = Presenter.shuffle(arrayResult);
 
     for (let index = 0; index < this.presenter.getQuantityCards(); index++) {
       const element = document.createElement('div');
@@ -147,15 +144,17 @@ class View {
   }
 
   // удаление всех карточек
-  static cardsRemove() {
-    $('.card').remove();
+  cardsRemove() {
+    this.$cards = $('.card');
+    this.$cards.remove();
   }
 
-  keepTrackOfControls($controls: JQuery<HTMLElement>, event: { target: any; }) {
+  // обработка кликов по панели с выборами сложности и типа игры
+  handleBtnControlClick($controls: JQuery<HTMLElement>, event: { target: any; }) {
     if (!$(event.target).hasClass('control__btn_active') && !this.presenter.getLoadingStatus()) {
       $controls.removeClass('control__btn_active');
       $(event.target).addClass('control__btn_active');
-      View.cardsRemove();
+      this.cardsRemove();
       this.endTimer();
 
       const paramSetType = $('.type .control__btn_active').data('type');
@@ -181,10 +180,10 @@ class View {
   }
 
   // инициализация панели с контроллерами
-  initControl(selector: string) {
+  initControlsPanel(selector: string) {
     const $controls = $(selector);
     $controls.on('click', (event) => {
-      this.keepTrackOfControls($controls, event);
+      this.handleBtnControlClick($controls, event);
     });
   }
 }
