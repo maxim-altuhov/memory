@@ -2,14 +2,17 @@ import './index.scss';
 
 import $ from 'jquery';
 import Model from './js/model';
-import View from './js/view';
+import ViewCardsBlock from './js/viewCardsBlock';
+import ViewControlsBlock from './js/viewControlsBlock';
 import Presenter from './js/presenter';
 
 $(() => {
   const model: Model = new Model();
-  const view: View = new View();
-  const presenter: Presenter = new Presenter(view, model);
+  const views = { viewCards: new ViewCardsBlock(), viewControls: new ViewControlsBlock() };
+  const presenter: Presenter = new Presenter(views, model);
 
-  view.registerWith(presenter);
-  view.init();
+  views.viewCards.registerWith(presenter);
+  views.viewControls.registerWith(presenter);
+  views.viewCards.init();
+  views.viewControls.init();
 });

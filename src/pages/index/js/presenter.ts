@@ -1,13 +1,15 @@
 import Model from './model';
-import View from './view';
-
 class Presenter {
-  view: View;
+  views;
   model: Model;
 
-  constructor(view: View, model: Model) {
-    this.view = view;
+  constructor(views: any, model: Model) {
+    this.views = views;
     this.model = model;
+  }
+
+  getStartingNumberOfCards() {
+    return this.model.getStartingNumberOfCards();
   }
 
   getCurrentBestTime() {
@@ -68,6 +70,26 @@ class Presenter {
 
   returnArrayShuffle(currentType: string): (string | number)[] {
     return this.model.returnArrayShuffle(currentType);
+  }
+
+  setBestTime() {
+    this.views.viewControls.setBestTime();
+  }
+
+  checkResultTime() {
+    this.views.viewControls.checkResultTime();
+  }
+
+  startTimer() {
+    this.views.viewControls.startTimer();
+  }
+
+  cardsRemove() {
+    this.views.viewCards.cardsRemove();
+  }
+
+  cardsRender(initValue: string) {
+    this.views.viewCards.cardsRender(initValue);
   }
 }
 
