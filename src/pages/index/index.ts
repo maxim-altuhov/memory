@@ -1,10 +1,10 @@
 import './index.scss';
 
 import $ from 'jquery';
-import Model from './js/model';
-import ViewCardsBlock from './js/viewCardsBlock';
-import ViewControlsBlock from './js/viewControlsBlock';
-import Presenter from './js/presenter';
+import Model from './ts/model';
+import ViewCardsBlock from './ts/viewCardsBlock';
+import ViewControlsBlock from './ts/viewControlsBlock';
+import Presenter from './ts/presenter';
 
 $(() => {
   const model: Model = new Model();
@@ -15,4 +15,5 @@ $(() => {
   views.viewControls.registerWith(presenter);
   views.viewCards.init();
   views.viewControls.init();
+  presenter.setEvent();
 });

@@ -2,6 +2,7 @@ import $ from 'jquery';
 import Presenter from './presenter';
 
 class ViewControlsBlock {
+  presenter: any;
   $blockBtnWithType = $('.type button');
   $resultMinuts = $('.result__minuts');
   $resultSeconds = $('.result__seconds');
@@ -9,7 +10,8 @@ class ViewControlsBlock {
   $elemMinutes = $('.time__minutes');
   $elemTimeReset = $('.time__reset');
   $elemWithResultTime = $('.time__digital');
-  presenter: any;
+  $btnSetType = $('.type button');
+  $btnSetDifficulty = $();
 
   constructor() {
     this.presenter = null;
@@ -22,18 +24,19 @@ class ViewControlsBlock {
   init() {
     this.setActiveType();
     this.renderControlBlock();
-    this.initControlsPanel(this.presenter.getSelectorControlDifficulty());
-    this.initControlsPanel(this.presenter.getSelectorControlType());
-    this.$elemTimeReset.on('click', this.handleResetTimer.bind(this));
+    this.$btnSetDifficulty = $('.difficulty button');
   }
 
-  // сброс таймера
-  handleResetTimer() {
-    if (!this.presenter.getLoadingStatus()) {
-      this.presenter.cardsRemove();
-      this.endTimer();
-      this.presenter.cardsRender(this.presenter.getType());
-    }
+  initControlDifficulty(handler: () => void): void {
+    this.$btnSetDifficulty.on('click', handler);
+  }
+
+  initControlType(handler: () => void): void {
+    this.$btnSetType.on('click', handler);
+  }
+
+  initResetTimer(handler: () => void): void {
+    this.$elemTimeReset.on('click', handler);
   }
 
   // подсветка выбранного типа
@@ -105,44 +108,6 @@ class ViewControlsBlock {
     if (currentBestTime === 0 || currentBestTime > Number(resultTime)) {
       localStorage.setItem(`${this.presenter.getType()}-${this.presenter.getQuantityCards()}`, resultTime);
     }
-  }
-
-  // обработка кликов по панели с выборами сложности и типа игры
-  handleBtnControlClick($controls: JQuery<HTMLElement>, event: { target: any; }) {
-    if (!$(event.target).hasClass('control__btn_active') && !this.presenter.getLoadingStatus()) {
-      $controls.removeClass('control__btn_active');
-      $(event.target).addClass('control__btn_active');
-      this.presenter.cardsRemove();
-      this.endTimer();
-
-      const paramSetType = $('.type .control__btn_active').data('type');
-      this.presenter.setType(paramSetType);
-
-      if ($(event.target).parent().hasClass('difficulty')) {
-        this.presenter.setQuantityCards(Number($(event.target).text()));
-        this.presenter.cardsRender(paramSetType);
-      }
-
-      if ($(event.target).data('type') === 'numbers') {
-        this.presenter.cardsRender('numbers');
-      }
-
-      if ($(event.target).data('type') === 'words') {
-        this.presenter.cardsRender('words');
-      }
-
-      if ($(event.target).data('type') === 'colors') {
-        this.presenter.cardsRender('colors');
-      }
-    }
-  }
-
-  // инициализация панели с контроллерами
-  initControlsPanel(selector: string) {
-    const $controls = $(selector);
-    $controls.on('click', (event) => {
-      this.handleBtnControlClick($controls, event);
-    });
   }
 }
 
