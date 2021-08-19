@@ -34,3 +34,19 @@ h3 {
   font-size: 12px;
   line-height: 15px;
 }
+
+
+:focus,
+button:focus {
+  outline: #f0f0f0 solid 2px;
+  outline-offset: 2px;
+}
+
+body.using-mouse {
+
+  &:focus,
+  button:focus {
+    outline: none;
+  }
+
+}

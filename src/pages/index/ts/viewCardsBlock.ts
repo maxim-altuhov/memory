@@ -24,7 +24,11 @@ class ViewCardsBlock {
 
     this.$cards.addClass('not-click');
     setTimeout(() => {
-      $('.is-flipped').removeClass('is-flipped').addClass(classDisabled);
+      const flippedElem = $('.is-flipped');
+      flippedElem.removeClass('is-flipped').addClass(classDisabled);
+
+      if (classDisabled !== '') flippedElem.attr('tabindex', -1);
+
       this.$cards.removeClass('not-click');
     }, 800);
   }
@@ -62,6 +66,48 @@ class ViewCardsBlock {
   cardsRemove() {
     this.$cards = $('.card');
     this.$cards.remove();
+  }
+
+  // переключение и сравнение карточек с запуском таймера
+  handleCheckingCards(event: any) {
+    event.preventDefault();
+
+    const canSelectWithTab = ($(event.target).hasClass('card') && !$(event.target).hasClass('disabled'));
+
+    if ($(event.target).parent().hasClass('card') || canSelectWithTab) {
+      if (this.presenter.getStatusInitTimer()) {
+        const initTimer = setInterval(() => {
+          this.presenter.startTimer();
+        }, 1000);
+
+        this.presenter.setTimerID(initTimer);
+        this.presenter.setStatusInitTimer(false);
+      }
+
+      let $flippedCard = $('.is-flipped');
+
+      if ($('.is-flipped').length < 2) {
+        if ($(event.target).hasClass('card')) {
+          $(event.target).toggleClass('is-flipped');
+        } else {
+          $(event.target).parent().toggleClass('is-flipped');
+        }
+
+        $flippedCard = $('.is-flipped');
+      }
+
+      if ($flippedCard.length === 2 && $flippedCard.eq(0).data('value') !== $flippedCard.eq(1).data('value')) {
+        this.checkThisCard();
+      } else if ($flippedCard.length === 2 && $flippedCard.eq(0).data('value') === $flippedCard.eq(1).data('value')) {
+        this.checkThisCard('disabled');
+      }
+
+      if ($('.disabled').length + 2 === this.presenter.getQuantityCards() && $flippedCard.length === 2) {
+        clearInterval(this.presenter.getTimerID());
+        this.presenter.setStatusInitTimer(true);
+        this.presenter.checkResultTime();
+      }
+    }
   }
 }
 

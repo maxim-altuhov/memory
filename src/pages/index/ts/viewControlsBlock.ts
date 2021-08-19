@@ -109,6 +109,49 @@ class ViewControlsBlock {
       localStorage.setItem(`${this.presenter.getType()}-${this.presenter.getQuantityCards()}`, resultTime);
     }
   }
+
+  // сброс таймера
+  handleResetTimer() {
+    if (!this.presenter.getLoadingStatus()) {
+      this.presenter.cardsRemove();
+      this.endTimer();
+      this.presenter.cardsRender(this.presenter.getType());
+    }
+  }
+
+  // обработка кликов по панели с выборами сложности и типа игры
+  handleBtnControlClick(event: any) {
+    event.preventDefault();
+
+    if (!$(event.target).hasClass('control__btn_active') && !this.presenter.getLoadingStatus()) {
+      const $allBtnsControl = $(event.target).parent().children();
+
+      $allBtnsControl.removeClass('control__btn_active');
+      $(event.target).addClass('control__btn_active');
+      this.presenter.cardsRemove();
+      this.endTimer();
+
+      const paramSetType = $('.type .control__btn_active').data('type');
+      this.presenter.setType(paramSetType);
+
+      if ($(event.target).parent().hasClass('difficulty')) {
+        this.presenter.setQuantityCards(Number($(event.target).text()));
+        this.presenter.cardsRender(paramSetType);
+      }
+
+      if ($(event.target).data('type') === 'numbers') {
+        this.presenter.cardsRender('numbers');
+      }
+
+      if ($(event.target).data('type') === 'words') {
+        this.presenter.cardsRender('words');
+      }
+
+      if ($(event.target).data('type') === 'colors') {
+        this.presenter.cardsRender('colors');
+      }
+    }
+  }
 }
 
 export default ViewControlsBlock;
