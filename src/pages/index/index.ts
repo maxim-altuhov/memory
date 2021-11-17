@@ -1,22 +1,37 @@
+/// <reference path='./index.d.ts' />
 import './index.scss';
-
 import $ from 'jquery';
-import checkedFocus from './ts/checkedFocus';
-import Model from './ts/model';
-import ViewCardsBlock from './ts/viewCardsBlock';
-import ViewControlsBlock from './ts/viewControlsBlock';
-import Presenter from './ts/presenter';
+import checkingFocus from './ts/checkingFocus';
+import Model from './layers/Model';
+import View from './layers/View';
+import Presenter from './layers/Presenter';
+import { numbers, words, colors } from './data/data';
 
 $(() => {
-  checkedFocus();
+  checkingFocus();
 
-  const model: Model = new Model();
-  const views = { viewCards: new ViewCardsBlock(), viewControls: new ViewControlsBlock() };
-  const presenter: Presenter = new Presenter(views, model);
+  const options: IModelOptions = {
+    numberOfCards: [8, 12, 16],
+    cardsType: {
+      numbers: 'числа',
+      words: 'слова',
+      colors: 'цвета',
+    },
+    currentBestTime: null,
+    currentNumberOfCards: '12',
+    setType: 'numbers',
+    resultArray: [],
+    inputArray: {
+      numbers,
+      words,
+      colors,
+    },
+  };
 
-  views.viewCards.registerWith(presenter);
-  views.viewControls.registerWith(presenter);
-  views.viewCards.init();
-  views.viewControls.init();
-  presenter.setEvent();
+  const model = new Model(options);
+  const view = new View();
+  const presenter = new Presenter(view, model);
+
+  presenter.setObservers();
+  model.update();
 });

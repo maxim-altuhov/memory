@@ -20,28 +20,22 @@
   <div class="page">
     <div class="page__wrapper">
       <h1 class="page__title">Игра мемори</h1>
-      <div id="block-difficulty" class="control">
-      </div>
-      <div class="control">
-        <div class="control__wrapper type">Выберите тип игры:
-          <button class="control__btn" data-type="numbers">числа</button>
-          <button class="control__btn" data-type="words">слова</button>
-          <button class="control__btn" data-type="colors">цвета</button>
+      <div id="memory-game">
+        <div class="control"></div>
+        <div class="time">
+          <div class="time__wrapper">
+            <div class="time__block"><span class="time__digital time__minutes">00</span><span class="time__info">м</span></div>
+            <div class="time__block"><span class="time__digital time__seconds">00</span><span class="time__info">с</span></div>
+            <button class="time__reset">сброс</button>
+          </div>
         </div>
-      </div>
-      <div class="time">
-        <div class="time__wrapper">
-          <div class="time__block"><span class="time__digital time__minutes">00</span><span class="time__info">м</span></div>
-          <div class="time__block"><span class="time__digital time__seconds">00</span><span class="time__info">с</span></div>
-          <button class="time__reset">сброс</button>
+        <div class="result">Ваше лучшeе время:<span class="result__minuts">-</span>:<span class="result__seconds">-</span></div>
+        <div class="loading">
+          <div class="loading__img"><img src="./img/loader.gif" alt="loadImg"></div>
         </div>
-      </div>
-      <div class="result">Ваше лучшeе время:<span class="result__minuts">-</span>:<span class="result__seconds">-</span></div>
-      <div class="loading">
-        <div class="loading__img"><img src="./img/loader.gif" alt="loadImg"></div>
-      </div>
-      <div class="memory">
-        <div class="memory__wrapper"></div>
+        <div class="memory">
+          <div class="memory__wrapper"></div>
+        </div>
       </div>
     </div>
   </div>

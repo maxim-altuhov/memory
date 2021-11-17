@@ -1,0 +1,60 @@
+.card {
+  display: block;
+  width: 160px;
+  height: 160px;
+  border-radius: 15px;
+  transition: transform 1s;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  position: relative;
+
+  @media (max-width: 575px) {
+    width: 130px;
+    height: 100px;
+  }
+
+  &__face {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    padding: 10px;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #222;
+    border-radius: 15px;
+    line-height: 140px;
+    color: #000;
+    text-align: center;
+    font-weight: bold;
+    font-size: 26px;
+    backface-visibility: hidden;
+
+    @media (max-width: 575px) {
+      line-height: 80px;
+      font-size: 21px;
+    }
+  }
+
+  &__face_front {
+    background: #FF9640;
+  }
+
+  &__face_back {
+    background: #ffffff;
+    transform: rotateY(180deg);
+  }
+
+  &.is-flipped {
+    transform: rotateY(180deg);
+  }
+
+  &.disabled {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  &.not-click {
+    pointer-events: none;
+  }
+}

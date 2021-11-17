@@ -1,23 +1,35 @@
 {
-  "parser": "babel-eslint",
+  "root": true,
+  "parser": "@typescript-eslint/parser",
   "env": {
     "browser": true,
     "es2021": true
   },
   "globals": {
-    "NodeJS": true,
-    "JQuery": true
+    "jQuery": true
   },
-  "extends": ["eslint:recommended", "airbnb-base/legacy"],
+  "extends": [
+    "airbnb-base",
+    "airbnb-typescript/base",
+    "prettier"
+  ],
   "parserOptions": {
+    "project": "./tsconfig.json",
     "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "plugins": ["import", "fsd"],
+  "plugins": [
+    "import",
+    "fsd",
+    "@typescript-eslint"
+  ],
   "rules": {
+    "no-shadow": ["error", { "allow": ["$"] }],
+    "func-names": ["error", "never"],
+    "max-len": ["warn"],
     "comma-dangle": ["warn", "always-multiline"],
     "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
-    "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
+    // "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
     "no-use-before-define": "warn",
     "no-param-reassign": ["error", { "props": false }],
     "no-unused-vars": ["warn", { "args": "none" }],
@@ -29,8 +41,11 @@
     "fsd/hof-name-prefix": "error",
     "fsd/no-heavy-constructor": "error",
     "fsd/jq-cache-dom-elements": "error",
-    // "fsd/jq-use-js-prefix-in-selector": "error",
-    // "fsd/no-function-declaration-in-event-listener": "error",
-    "fsd/split-conditionals": "error"
+    "fsd/jq-use-js-prefix-in-selector": "off",
+    "fsd/no-function-declaration-in-event-listener": "error",
+    "fsd/split-conditionals": "error",
+    "lines-between-class-members": "off",
+    "@typescript-eslint/lines-between-class-members": ["error", "off", { "exceptAfterOverload": true }],
+    "no-underscore-dangle": ["off"]
   }
 }
